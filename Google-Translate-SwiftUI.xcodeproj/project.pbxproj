@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		4A54372726BFC5B50050ECBE /* Google_Translate_SwiftUIApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A54372626BFC5B50050ECBE /* Google_Translate_SwiftUIApp.swift */; };
-		4A54372926BFC5B50050ECBE /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A54372826BFC5B50050ECBE /* ContentView.swift */; };
+		4A54372926BFC5B50050ECBE /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A54372826BFC5B50050ECBE /* HomeView.swift */; };
 		4A54372B26BFC5BA0050ECBE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4A54372A26BFC5BA0050ECBE /* Assets.xcassets */; };
 		4A54372E26BFC5BA0050ECBE /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4A54372D26BFC5BA0050ECBE /* Preview Assets.xcassets */; };
 		4A54373026BFC5BA0050ECBE /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A54372F26BFC5BA0050ECBE /* Persistence.swift */; };
@@ -17,6 +17,8 @@
 		4A54374926BFC5BA0050ECBE /* Google_Translate_SwiftUIUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A54374826BFC5BA0050ECBE /* Google_Translate_SwiftUIUITests.swift */; };
 		4A54375726BFCCE50050ECBE /* ViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A54375626BFCCE40050ECBE /* ViewModel.swift */; };
 		4A54375926BFCCF50050ECBE /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A54375826BFCCF50050ECBE /* Model.swift */; };
+		4AF7ECD726C0B71A00CB37D5 /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AF7ECD626C0B71A00CB37D5 /* MainView.swift */; };
+		4AF7ECD926C0B74500CB37D5 /* StarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AF7ECD826C0B74500CB37D5 /* StarView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -39,7 +41,7 @@
 /* Begin PBXFileReference section */
 		4A54372326BFC5B50050ECBE /* Google-Translate-SwiftUI.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Google-Translate-SwiftUI.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		4A54372626BFC5B50050ECBE /* Google_Translate_SwiftUIApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Google_Translate_SwiftUIApp.swift; sourceTree = "<group>"; };
-		4A54372826BFC5B50050ECBE /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		4A54372826BFC5B50050ECBE /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		4A54372A26BFC5BA0050ECBE /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		4A54372D26BFC5BA0050ECBE /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		4A54372F26BFC5BA0050ECBE /* Persistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Persistence.swift; sourceTree = "<group>"; };
@@ -53,6 +55,8 @@
 		4A54374A26BFC5BA0050ECBE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		4A54375626BFCCE40050ECBE /* ViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModel.swift; sourceTree = "<group>"; };
 		4A54375826BFCCF50050ECBE /* Model.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Model.swift; sourceTree = "<group>"; };
+		4AF7ECD626C0B71A00CB37D5 /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
+		4AF7ECD826C0B74500CB37D5 /* StarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StarView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -161,7 +165,9 @@
 		4A54375C26BFCD210050ECBE /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				4A54372826BFC5B50050ECBE /* ContentView.swift */,
+				4AF7ECD626C0B71A00CB37D5 /* MainView.swift */,
+				4A54372826BFC5B50050ECBE /* HomeView.swift */,
+				4AF7ECD826C0B74500CB37D5 /* StarView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -299,7 +305,9 @@
 				4A54373026BFC5BA0050ECBE /* Persistence.swift in Sources */,
 				4A54373326BFC5BA0050ECBE /* Google_Translate_SwiftUI.xcdatamodeld in Sources */,
 				4A54375926BFCCF50050ECBE /* Model.swift in Sources */,
-				4A54372926BFC5B50050ECBE /* ContentView.swift in Sources */,
+				4AF7ECD726C0B71A00CB37D5 /* MainView.swift in Sources */,
+				4A54372926BFC5B50050ECBE /* HomeView.swift in Sources */,
+				4AF7ECD926C0B74500CB37D5 /* StarView.swift in Sources */,
 				4A54372726BFC5B50050ECBE /* Google_Translate_SwiftUIApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
