@@ -10,6 +10,7 @@ import SwiftUI
 
 struct MainView: View {
     
+    @State var starTapped: Bool = false
     var body: some View {
         
         TabView {
@@ -18,7 +19,7 @@ struct MainView: View {
                     Label("Home", systemImage: "house.fill")
                 }
 
-            StarView()
+            StarView(starTapped: $starTapped)
                 .tabItem {
                     Label("Saved", systemImage: "star.fill")
                 }

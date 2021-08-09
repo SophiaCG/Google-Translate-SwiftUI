@@ -28,6 +28,7 @@ struct LanguagesList: View {
                         .foregroundColor(.black)
                         .bold()
                         .padding(20)
+                        .font(.system(size: 22))
                     Spacer()
                     Button(action: {
                         self.isPresented = false
@@ -58,7 +59,7 @@ struct LanguagesList: View {
                                 .padding(.leading, 30)
                             Spacer()
                         })
-                        .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height * 0.08, alignment: .center)
+                        .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height * 0.07, alignment: .center)
                         .border(Color.gray, width: 0.23)
                         
                     }

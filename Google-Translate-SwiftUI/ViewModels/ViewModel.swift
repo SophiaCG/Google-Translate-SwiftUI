@@ -45,7 +45,7 @@ class ViewModel: ObservableObject {
 
     func translate(completion:@escaping (TranslationResults) -> ()) {
 
-        guard let url = URL(string: "https://google-translate20.p.rapidapi.com/translate?text=hello&tl=es&rapidapi-key=\(apiKey)") else {
+        guard let url = URL(string: "https://google-translate20.p.rapidapi.com/translate?text=hello&tl=fr&rapidapi-key=\(apiKey)") else {
             print("Invalid URL")
             return
         }
