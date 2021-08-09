@@ -18,8 +18,11 @@ struct HomeView: View {
     private var items: FetchedResults<History>
     
     @State var input: String = ""
-    @State var results = [Language]()
     @State var translation: String = ""
+    @State var isPresented: Bool = false
+    @State var choice: Int = 1
+    @State var firstLanguage: String = "English"
+    @State var secondLanguage: String = "French"
     
     var body: some View {
         
@@ -37,8 +40,13 @@ struct HomeView: View {
             
 //MARK: - Buttons
             HStack {
-                Button(action: { print("First language") }, label: {
-                    Text("English")
+                Button(action: {
+                    print(firstLanguage)
+                    choice = 1
+                    isPresented.toggle()
+                    
+                }, label: {
+                    Text(firstLanguage)
                         .bold()
                         .frame(width: 150, height: 40, alignment: .center)
                         .background(Color.white)
@@ -52,8 +60,12 @@ struct HomeView: View {
                         .foregroundColor(Color(UIColor.darkGray))
                 })
                 
-                Button(action: { print("Second language") }, label: {
-                    Text("French")
+                Button(action: {
+                    print(secondLanguage)
+                    choice = 2
+                    isPresented.toggle()
+                }, label: {
+                    Text(secondLanguage)
                         .bold()
                         .frame(width: 150, height: 40, alignment: .center)
                         .background(Color.white)
@@ -78,12 +90,9 @@ struct HomeView: View {
                     .border(Color(UIColor.systemGray2), width: 1)
                 
             }.onAppear() {
-//                ViewModel().getLanguages { (results) in
-//                    self.results = results.data.languages
+//                ViewModel().translate { (results) in
+//                    self.translation = results.data.translation
 //                }
-                ViewModel().translate { (results) in
-                    self.translation = results.data.translation
-                }
             }
             
 //MARK: - List of Translations
@@ -102,6 +111,8 @@ struct HomeView: View {
                     Label("Add Item", systemImage: "plus")
                 }
             }
+        }.sheet(isPresented: $isPresented) {
+            LanguagesList(isPresented: $isPresented, firstLanguage: $firstLanguage, secondLanguage: $secondLanguage, choice: $choice)
         }
     }
     
