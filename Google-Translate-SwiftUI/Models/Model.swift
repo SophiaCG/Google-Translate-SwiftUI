@@ -8,17 +8,25 @@
 import Foundation
 import SwiftUI
 
-struct Results: Codable {
-    var results: [Result]
+//MARK: - Model for translations
+struct TranslationResults: Codable {
+    var data: TranslationData
 }
 
-struct Result: Codable {
-    var id: Int
-    let title: String
-    let image: String
-    
+struct TranslationData: Codable {
+    var translation: String
+    var source: Source
 }
 
+struct Source: Codable {
+    var language: TranslationLanguage
+}
+
+struct TranslationLanguage: Codable {
+    var iso: String
+}
+
+//MARK: - Model for list of languages
 struct Data: Codable {
     var data: Languages
 }
@@ -28,7 +36,6 @@ struct Languages: Codable {
 }
 
 struct Language: Codable {
-//    var id = UUID()
     var language: String
     var name: String
 }

@@ -19,6 +19,7 @@ struct HomeView: View {
     
     @State var input: String = ""
     @State var results = [Language]()
+    @State var translation: String = ""
     
     var body: some View {
         
@@ -29,7 +30,7 @@ struct HomeView: View {
                 Rectangle()
                     .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height * 0.075, alignment: .top)
                     .foregroundColor(.blue)
-                Text("Google Translate")
+                Text("Google Translate Clone")
                     .foregroundColor(.white)
                     .bold()
             }
@@ -77,8 +78,11 @@ struct HomeView: View {
                     .border(Color(UIColor.systemGray2), width: 1)
                 
             }.onAppear() {
-                apiCall().getResults { (results) in
-                    self.results = results.data.languages
+//                ViewModel().getLanguages { (results) in
+//                    self.results = results.data.languages
+//                }
+                ViewModel().translate { (results) in
+                    self.translation = results.data.translation
                 }
             }
             
