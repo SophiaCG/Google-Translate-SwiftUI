@@ -133,7 +133,7 @@ struct HomeView: View {
                         Spacer()
                         Button(action: {
                             print("Translating \(viewModel.input)")
-                            ViewModel().translate(for: viewModel.input, for: viewedLanguages.secondCode) { (results) in
+                            ViewModel().translate(for: viewModel.input, for: viewedLanguages.firstCode, for: viewedLanguages.secondCode) { (results) in
                                 viewModel.translation = results.data.translation
                             }
                         }, label: {
