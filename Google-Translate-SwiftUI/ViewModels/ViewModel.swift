@@ -10,10 +10,12 @@ import Foundation
 class ViewModel: ObservableObject {
     
     @Published var languages = [Language]()
-    @Published var translation = String()
+    @Published var translation: String = ""
+    @Published var input: String = "How are you?"
+    
     let apiKey = "API-KEY-HERE"
     
-    func getLanguages(completion:@escaping (Data) -> ()) {
+    func getLanguages(completion:@escaping (ListResults) -> ()) {
         
         guard let url = URL(string: "https://google-translate1.p.rapidapi.com/language/translate/v2/languages?target=en&rapidapi-key=\(apiKey)") else {
             print("Invalid URL")
@@ -22,12 +24,12 @@ class ViewModel: ObservableObject {
         
         let task = URLSession.shared.dataTask(with: url) { (data, response, error) in
             guard data != nil else {
-                print("ERROR: \(String(describing: error))")
+                print("TASK ERROR 1: \(String(describing: error))")
                 return
             }
             
             do {
-                let results = try JSONDecoder().decode(Data.self, from: data!)
+                let results = try JSONDecoder().decode(ListResults.self, from: data!)
                 print("LANGUAGES: \(results.data.languages[0].name)")
                 
                 DispatchQueue.main.async {
@@ -36,23 +38,25 @@ class ViewModel: ObservableObject {
                 }
                 
             } catch {
-                print("ERROR: \(error)")
+                print("RESULTS ERROR 1: \(error)")
             }
 
         }
         task.resume()
     }
 
-    func translate(completion:@escaping (TranslationResults) -> ()) {
+    func translate(for input: String, completion:@escaping (TranslationResults) -> ()) {
 
-        guard let url = URL(string: "https://google-translate20.p.rapidapi.com/translate?text=hello&tl=fr&rapidapi-key=\(apiKey)") else {
+        let newInput = input.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)
+        print("\(input) -> \(newInput!)")
+        guard let url = URL(string: "https://google-translate20.p.rapidapi.com/translate?text=\(newInput!)&tl=fr&rapidapi-key=\(apiKey)") else {
             print("Invalid URL")
             return
         }
         
         let task = URLSession.shared.dataTask(with: url) { (data, response, error) in
             guard data != nil else {
-                print("ERROR: \(String(describing: error))")
+                print("TASK ERROR 2: \(String(describing: error))")
                 return
             }
             
@@ -66,7 +70,7 @@ class ViewModel: ObservableObject {
                 }
                 
             } catch {
-                print("ERROR: \(error)")
+                print("RESULTS ERROR 2: \(error)")
             }
 
         }

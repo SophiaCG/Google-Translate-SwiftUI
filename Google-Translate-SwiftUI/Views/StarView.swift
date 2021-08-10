@@ -60,8 +60,8 @@ struct StarView: View {
                             starTapped.toggle()
                         }, label: {
                             Image(systemName: starTapped ? "star.fill" : "star")
-                                .font(.system(size: 20))
-                                .foregroundColor(.yellow)
+                                .font(.system(size: 17))
+                                .foregroundColor(starTapped ? .yellow : .black)
                                 .padding(.trailing, 15)
                         })
                     }

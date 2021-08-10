@@ -11,10 +11,12 @@ import SwiftUI
 struct MainView: View {
     
     @State var starTapped: Bool = false
+    @ObservedObject var viewModel: ViewModel
+    
     var body: some View {
         
         TabView {
-            HomeView()
+            HomeView(viewModel: viewModel)
                 .tabItem {
                     Label("Home", systemImage: "house.fill")
                 }

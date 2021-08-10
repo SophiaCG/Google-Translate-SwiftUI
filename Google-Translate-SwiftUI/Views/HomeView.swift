@@ -17,8 +17,8 @@ struct HomeView: View {
         animation: .default)
     private var items: FetchedResults<History>
     
-    @State var input: String = ""
-    @State var translation: String = ""
+    @ObservedObject var viewModel: ViewModel
+    
     @State var isPresented: Bool = false
     @State var choice: Int = 1
     @State var firstLanguage: String = "English"
@@ -85,7 +85,7 @@ struct HomeView: View {
 //MARK: - Text Fields
             VStack (spacing: -10) {
                 ZStack {
-                    TextField("Enter text", text: $input)
+                    TextField("Enter text", text: $viewModel.input)
                         .frame(width: screen.width * 0.925, height: screen.height * 0.1, alignment: .top)
                         .padding(.horizontal, 20)
                         .padding(.vertical, 10)
@@ -94,7 +94,7 @@ struct HomeView: View {
                     HStack {
                         Spacer()
                         Button(action: {
-                            input = ""
+                            viewModel.input = ""
                         }, label: {
                             Image(systemName: "multiply")
                                 .frame(width: 25, height: 25, alignment: .center)
@@ -105,7 +105,7 @@ struct HomeView: View {
                 }
                 
                 ZStack {
-                    TextField("", text: $translation)
+                    TextField("", text: $viewModel.translation)
                         .frame(width: screen.width * 0.925, height: screen.height * 0.1, alignment: .top)
                         .padding(.horizontal, 20)
                         .padding(.vertical, 10)
@@ -115,9 +115,9 @@ struct HomeView: View {
                     HStack {
                         Spacer()
                         Button(action: {
-                            print("Translating...")
-                            ViewModel().translate { (results) in
-                                self.translation = results.data.translation
+                            print("Translating \(viewModel.input)")
+                            ViewModel().translate(for: viewModel.input) { (results) in
+                                viewModel.translation = results.data.translation
                             }
                         }, label: {
                             Image(systemName: "arrow.right")
@@ -225,8 +225,8 @@ struct HomeView: View {
     }
 }
 
-struct ContentView_Previews: PreviewProvider {
-    static var previews: some View {
-        HomeView().environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
-    }
-}
+//struct ContentView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        HomeView().environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
+//    }
+//}

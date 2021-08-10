@@ -27,7 +27,7 @@ struct TranslationLanguage: Codable {
 }
 
 //MARK: - Model for list of languages
-struct Data: Codable {
+struct ListResults: Codable {
     var data: Languages
 }
 
