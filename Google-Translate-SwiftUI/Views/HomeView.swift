@@ -34,6 +34,7 @@ struct HomeView: View {
     
     @State var isPresented: Bool = false
     @State var choice: Int = 1
+    
     let screen = UIScreen.main.bounds
     
     var body: some View {
@@ -134,17 +135,19 @@ struct HomeView: View {
                     HStack {
                         Spacer()
                         Button(action: {
-                            print("Translating \(viewModel.input)")
-                            ViewModel().translate(for: viewModel.input, for: viewedLanguages.firstCode, for: viewedLanguages.secondCode) { (results) in
-                                viewModel.translation = results.data.translation
-                            }
-                            
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 4) {
-                                print("About to save translation")
-                                if !viewModel.translation.isEmpty {
-                                    translation.input = viewModel.input
-                                    translation.translation = viewModel.translation
-                                    save(translation: translation)
+                            if !viewModel.input.isEmpty {
+                                print("Translating \(viewModel.input)")
+                                ViewModel().translate(for: viewModel.input, for: viewedLanguages.firstCode, for: viewedLanguages.secondCode) { (results) in
+                                    viewModel.translation = results.data.translation
+                                }
+                                
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 3.5) {
+                                    print("About to save translation")
+                                    if !viewModel.translation.isEmpty {
+                                        translation.input = viewModel.input
+                                        translation.translation = viewModel.translation
+                                        save(translation: translation)
+                                    }
                                 }
                             }
                         }, label: {
@@ -169,7 +172,7 @@ struct HomeView: View {
                                 .bold()
                                 .foregroundColor(.black)
                                 .font(.system(size: 17))
-                                .padding(.leading, 23)
+                                .padding(.leading, 20)
                             Text("\(savedItem.translation!)")
                                 .bold()
                                 .foregroundColor(Color(UIColor.systemGray))
@@ -201,7 +204,7 @@ struct HomeView: View {
             }.background(Color(UIColor.systemGray6).opacity(20))
         }
         .sheet(isPresented: $isPresented) {
-            LanguagesList(isPresented: $isPresented, choice: $choice, viewedLanguages: $viewedLanguages)
+            LanguagesList(viewedLanguages: $viewedLanguages, isPresented: $isPresented, choice: $choice)
         }
     }
     

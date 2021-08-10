@@ -13,10 +13,10 @@ class ViewModel: ObservableObject {
     @Published var languages = [Language]()
 
     @Published var input: String = ""
+    @Published var translation: String = ""
     @Published var sourceLang: String = "en"
     @Published var targetLang: String = "fr"
-    @Published var translation: String = ""
-        
+
     let apiKey = "API-KEY-HERE"
     
     func getLanguages(completion:@escaping (ListResults) -> ()) {

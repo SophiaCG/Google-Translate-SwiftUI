@@ -12,10 +12,10 @@ struct LanguagesList: View {
     
     @State var names: [String] = []
     @State var codes: [String] = []
+    @Binding var viewedLanguages: ViewedLanguages
     @Binding var isPresented: Bool
     @Binding var choice: Int
-    @Binding var viewedLanguages: ViewedLanguages
-    
+
     var body: some View {
         
         VStack {
