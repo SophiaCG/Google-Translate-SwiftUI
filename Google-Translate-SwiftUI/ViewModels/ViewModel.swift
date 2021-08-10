@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftUI
 
 class ViewModel: ObservableObject {
     
@@ -15,7 +16,7 @@ class ViewModel: ObservableObject {
     @Published var sourceLang: String = "en"
     @Published var targetLang: String = "fr"
     @Published var translation: String = ""
-    
+        
     let apiKey = "API-KEY-HERE"
     
     func getLanguages(completion:@escaping (ListResults) -> ()) {

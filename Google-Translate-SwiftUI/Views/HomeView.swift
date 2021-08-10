@@ -15,23 +15,26 @@ struct ViewedLanguages: Hashable, Equatable {
     var secondCode: String = "fr"
 }
 
+struct Translation {
+    var input: String = ""
+    var translation: String = ""
+    var star: Bool = false
+}
+
 struct HomeView: View {
     
-    @Environment(\.managedObjectContext) private var viewContext
+    @Environment(\.managedObjectContext) private var context
     
-    @FetchRequest(
-        sortDescriptors: [NSSortDescriptor(keyPath: \History.self, ascending: true)],
-        animation: .default)
-    private var items: FetchedResults<History>
+    @FetchRequest(entity: SavedTranslations.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \SavedTranslations.time, ascending: true)])
+    var savedTranslations: FetchedResults<SavedTranslations>
     
     @ObservedObject var viewModel: ViewModel
     
     @State var viewedLanguages = ViewedLanguages()
+    @State var translation = Translation()
+    
     @State var isPresented: Bool = false
     @State var choice: Int = 1
-    @State var starTapped: Bool = false
-    
-    var mockData: [String: String] = ["Hello":"Bonjour", "I don't understand":"Je ne comprends pas", "No":"Non"]
     let screen = UIScreen.main.bounds
     
     var body: some View {
@@ -136,6 +139,15 @@ struct HomeView: View {
                             ViewModel().translate(for: viewModel.input, for: viewedLanguages.firstCode, for: viewedLanguages.secondCode) { (results) in
                                 viewModel.translation = results.data.translation
                             }
+                            
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 4) {
+                                print("About to save translation")
+                                if !viewModel.translation.isEmpty {
+                                    translation.input = viewModel.input
+                                    translation.translation = viewModel.translation
+                                    save(translation: translation)
+                                }
+                            }
                         }, label: {
                             Image(systemName: "arrow.right")
                                 .frame(width: 25, height: 25, alignment: .center)
@@ -150,19 +162,16 @@ struct HomeView: View {
             }
             
 //MARK: - List of Translations
-            let keys = mockData.map{$0.key}
-            let values = mockData.map{$0.value}
-
             ScrollView {
-                ForEach(keys.indices, id: \.self) { index in
+                ForEach(savedTranslations, id: \.self) { savedItem in
                     HStack {
                         VStack {
-                            Text(keys[index])
+                            Text("\(savedItem.input!)")
                                 .bold()
                                 .foregroundColor(.black)
                                 .font(.system(size: 17))
                                 .padding(.leading, 23)
-                            Text(values[index])
+                            Text("\(savedItem.translation!)")
                                 .bold()
                                 .foregroundColor(Color(UIColor.systemGray))
                                 .font(.system(size: 13))
@@ -173,70 +182,55 @@ struct HomeView: View {
 
                         Button(action: {
                             print("Translation Starred")
-                            starTapped.toggle()
+//                            starTapped.toggle()
                         }, label: {
-                            Image(systemName: starTapped ? "star.fill" : "star")
+                            Image(systemName: savedItem.star ? "star.fill" : "star")
                                 .font(.system(size: 17))
-                                .foregroundColor(starTapped ? .yellow : .black)
+                                .foregroundColor(savedItem.star ? .yellow : .black)
                                 .padding(.trailing, 15)
                         })
                     }
                     .frame(width: screen.width * 0.98, height: screen.height * 0.08, alignment: .center)
                     .border(Color.gray, width: 0.23)
                     .background(Color.white)
+                    .onLongPressGesture {
+                        delete(savedItem: savedItem)
+                    }
 
                 }
             }.background(Color(UIColor.systemGray6).opacity(20))
-
-
-//            List {
-//                ForEach(items) { item in
-//                    Text("Item at \(String(describing: item.translated))")
-//                }
-//                .onDelete(perform: deleteItems)
-//            }
-//            .toolbar {
-//                #if os(iOS)
-//                EditButton()
-//                #endif
-//
-//                Button(action: addItem) {
-//                    Label("Add Item", systemImage: "plus")
-//                }
-//            }
         }
         .sheet(isPresented: $isPresented) {
             LanguagesList(isPresented: $isPresented, choice: $choice, viewedLanguages: $viewedLanguages)
         }
     }
     
-    private func addItem() {
+    private func save(translation: Translation) {
         withAnimation {
-            //            let newItem = History(context: viewContext)
-            //            newItem.timestamp = Date()
-            
+            print("Saving \(translation.input)")
+
+            let newItem = SavedTranslations(context: context)
+            newItem.input = translation.input
+            newItem.translation = translation.translation
+            newItem.star = translation.star
+            newItem.time = Date()
+                        
             do {
-                try viewContext.save()
+                try context.save()
             } catch {
-                // Replace this implementation with code to handle the error appropriately.
-                // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-                let nsError = error as NSError
-                fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
+                print(error.localizedDescription)
             }
         }
     }
     
-    private func deleteItems(offsets: IndexSet) {
+    private func delete(savedItem: SavedTranslations) {
         withAnimation {
-            offsets.map { items[$0] }.forEach(viewContext.delete)
-            
+            print("Deleting \(savedItem.input!)")
+            context.delete(savedItem)
             do {
-                try viewContext.save()
+                try context.save()
             } catch {
-                // Replace this implementation with code to handle the error appropriately.
-                // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-                let nsError = error as NSError
-                fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
+                print(error.localizedDescription)
             }
         }
     }
