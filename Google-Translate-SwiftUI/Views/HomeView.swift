@@ -24,10 +24,9 @@ struct Translation {
 struct HomeView: View {
     
     @Environment(\.managedObjectContext) private var context
-    
     @FetchRequest(entity: SavedTranslations.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \SavedTranslations.time, ascending: true)])
     var savedTranslations: FetchedResults<SavedTranslations>
-    
+
     @ObservedObject var viewModel: ViewModel
     
     @State var viewedLanguages = ViewedLanguages()
@@ -181,8 +180,9 @@ struct HomeView: View {
                         Spacer()
 
                         Button(action: {
-                            print("Translation Starred")
-//                            starTapped.toggle()
+                            savedItem.star.toggle()
+                            star(savedItem: savedItem, starStatus: savedItem.star)
+
                         }, label: {
                             Image(systemName: savedItem.star ? "star.fill" : "star")
                                 .font(.system(size: 17))
@@ -222,7 +222,21 @@ struct HomeView: View {
             }
         }
     }
-    
+
+    func star(savedItem: SavedTranslations, starStatus: Bool) {
+        withAnimation {
+            print("Starring \(savedItem.input!)")
+
+            savedItem.star = starStatus
+                        
+            do {
+                try context.save()
+            } catch {
+                print(error.localizedDescription)
+            }
+        }
+    }
+
     private func delete(savedItem: SavedTranslations) {
         withAnimation {
             print("Deleting \(savedItem.input!)")
@@ -235,9 +249,3 @@ struct HomeView: View {
         }
     }
 }
-
-//struct ContentView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        HomeView().environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
-//    }
-//}
