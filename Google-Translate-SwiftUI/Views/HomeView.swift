@@ -8,6 +8,13 @@
 import SwiftUI
 import CoreData
 
+struct ViewedLanguages: Hashable, Equatable {
+    var firstName: String = "English"
+    var firstCode: String = "en"
+    var secondName: String = "French"
+    var secondCode: String = "fr"
+}
+
 struct HomeView: View {
     
     @Environment(\.managedObjectContext) private var viewContext
@@ -19,10 +26,9 @@ struct HomeView: View {
     
     @ObservedObject var viewModel: ViewModel
     
+    @State var viewedLanguages = ViewedLanguages()
     @State var isPresented: Bool = false
     @State var choice: Int = 1
-    @State var firstLanguage: String = "English"
-    @State var secondLanguage: String = "French"
     @State var starTapped: Bool = false
     
     var mockData: [String: String] = ["Hello":"Bonjour", "I don't understand":"Je ne comprends pas", "No":"Non"]
@@ -45,12 +51,13 @@ struct HomeView: View {
 //MARK: - Buttons
             HStack {
                 Button(action: {
-                    print(firstLanguage)
+                    print(viewedLanguages.firstName)
+                    print(viewedLanguages.firstCode)
                     choice = 1
                     isPresented.toggle()
                     
                 }, label: {
-                    Text(firstLanguage)
+                    Text(viewedLanguages.firstName)
                         .bold()
                         .frame(width: 150, height: 40, alignment: .center)
                         .background(Color.white)
@@ -59,9 +66,18 @@ struct HomeView: View {
                 
                 Button(action: {
                     print("Switch language")
-                    let temp = firstLanguage
-                    firstLanguage = secondLanguage
-                    secondLanguage = temp
+                    let temp = viewedLanguages.firstName
+                    viewedLanguages.firstName = viewedLanguages.secondName
+                    viewedLanguages.secondName = temp
+                    
+                    let temp2 = viewedLanguages.firstCode
+                    viewedLanguages.firstCode = viewedLanguages.secondCode
+                    viewedLanguages.secondCode = temp2
+                    
+                    let temp3 = viewModel.input
+                    viewModel.input = viewModel.translation
+                    viewModel.translation = temp3
+
                 }, label: {
                     Image(systemName: "arrow.right.arrow.left")
                         .frame(width: 75, height: 40, alignment: .center)
@@ -70,11 +86,12 @@ struct HomeView: View {
                 })
                 
                 Button(action: {
-                    print(secondLanguage)
+                    print(viewedLanguages.secondName)
+                    print(viewedLanguages.secondCode)
                     choice = 2
                     isPresented.toggle()
                 }, label: {
-                    Text(secondLanguage)
+                    Text(viewedLanguages.secondName)
                         .bold()
                         .frame(width: 150, height: 40, alignment: .center)
                         .background(Color.white)
@@ -116,7 +133,7 @@ struct HomeView: View {
                         Spacer()
                         Button(action: {
                             print("Translating \(viewModel.input)")
-                            ViewModel().translate(for: viewModel.input) { (results) in
+                            ViewModel().translate(for: viewModel.input, for: viewedLanguages.secondCode) { (results) in
                                 viewModel.translation = results.data.translation
                             }
                         }, label: {
@@ -189,7 +206,7 @@ struct HomeView: View {
 //            }
         }
         .sheet(isPresented: $isPresented) {
-            LanguagesList(isPresented: $isPresented, firstLanguage: $firstLanguage, secondLanguage: $secondLanguage, choice: $choice)
+            LanguagesList(isPresented: $isPresented, choice: $choice, viewedLanguages: $viewedLanguages)
         }
     }
     

@@ -10,8 +10,10 @@ import Foundation
 class ViewModel: ObservableObject {
     
     @Published var languages = [Language]()
-    @Published var translation: String = ""
+
     @Published var input: String = "How are you?"
+    @Published var targetLang: String = "fr"
+    @Published var translation: String = ""
     
     let apiKey = "API-KEY-HERE"
     
@@ -45,11 +47,11 @@ class ViewModel: ObservableObject {
         task.resume()
     }
 
-    func translate(for input: String, completion:@escaping (TranslationResults) -> ()) {
+    func translate(for input: String, for targetLang: String, completion:@escaping (TranslationResults) -> ()) {
 
         let newInput = input.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)
         print("\(input) -> \(newInput!)")
-        guard let url = URL(string: "https://google-translate20.p.rapidapi.com/translate?text=\(newInput!)&tl=fr&rapidapi-key=\(apiKey)") else {
+        guard let url = URL(string: "https://google-translate20.p.rapidapi.com/translate?text=\(newInput!)&tl=\(targetLang)&rapidapi-key=\(apiKey)") else {
             print("Invalid URL")
             return
         }

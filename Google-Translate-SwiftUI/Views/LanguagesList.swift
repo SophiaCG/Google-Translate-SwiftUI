@@ -11,10 +11,10 @@ import SwiftUI
 struct LanguagesList: View {
     
     @State var names: [String] = []
+    @State var codes: [String] = []
     @Binding var isPresented: Bool
-    @Binding var firstLanguage: String
-    @Binding var secondLanguage: String
     @Binding var choice: Int
+    @Binding var viewedLanguages: ViewedLanguages
     
     var body: some View {
         
@@ -42,18 +42,21 @@ struct LanguagesList: View {
             }
 
             ScrollView {
-                ForEach(names, id: \.self) { name in
+                ForEach(names.indices, id: \.self) { index in
                     HStack {
                         Button(action: {
-                            print("Translating from: \(name)")
+                            print("Translating from: \(names[index])")
                             if choice == 1 {
-                                firstLanguage = name
+                                viewedLanguages.firstName = names[index]
+                                viewedLanguages.firstCode = codes[index]
+                                
                             } else if choice == 2 {
-                                secondLanguage = name
+                                viewedLanguages.secondName = names[index]
+                                viewedLanguages.secondCode = codes[index]
                             }
                             self.isPresented = false
                         }, label: {
-                            Text(name)
+                            Text(names[index])
                                 .bold()
                                 .foregroundColor(.black)
                                 .padding(.leading, 30)
@@ -68,6 +71,7 @@ struct LanguagesList: View {
                     ViewModel().getLanguages { (results) in
                         for result in results.data.languages {
                             names.append(result.name)
+                            codes.append(result.language)
                         }
                     }
                 }
