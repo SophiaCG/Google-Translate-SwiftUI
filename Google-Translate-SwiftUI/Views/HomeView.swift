@@ -13,6 +13,7 @@ struct ViewedLanguages: Hashable, Equatable {
     var firstCode: String = "en"
     var secondName: String = "French"
     var secondCode: String = "fr"
+    var selection: Int = 0
 }
 
 struct Translation {
@@ -28,12 +29,10 @@ struct HomeView: View {
     var savedTranslations: FetchedResults<SavedTranslations>
 
     @ObservedObject var viewModel: ViewModel
-    
     @State var viewedLanguages = ViewedLanguages()
-    @State var translation = Translation()
     
+    @State var translation = Translation()
     @State var isPresented: Bool = false
-    @State var choice: Int = 1
     
     let screen = UIScreen.main.bounds
     
@@ -56,7 +55,7 @@ struct HomeView: View {
                 Button(action: {
                     print(viewedLanguages.firstName)
                     print(viewedLanguages.firstCode)
-                    choice = 1
+                    viewedLanguages.selection = 1
                     isPresented.toggle()
                     
                 }, label: {
@@ -91,7 +90,7 @@ struct HomeView: View {
                 Button(action: {
                     print(viewedLanguages.secondName)
                     print(viewedLanguages.secondCode)
-                    choice = 2
+                    viewedLanguages.selection = 2
                     isPresented.toggle()
                 }, label: {
                     Text(viewedLanguages.secondName)
@@ -204,7 +203,7 @@ struct HomeView: View {
             }.background(Color(UIColor.systemGray6).opacity(20))
         }
         .sheet(isPresented: $isPresented) {
-            LanguagesList(viewedLanguages: $viewedLanguages, isPresented: $isPresented, choice: $choice)
+            LanguagesList(viewedLanguages: $viewedLanguages, isPresented: $isPresented)
         }
     }
     

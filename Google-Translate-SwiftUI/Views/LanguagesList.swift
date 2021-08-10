@@ -14,7 +14,6 @@ struct LanguagesList: View {
     @State var codes: [String] = []
     @Binding var viewedLanguages: ViewedLanguages
     @Binding var isPresented: Bool
-    @Binding var choice: Int
 
     var body: some View {
         
@@ -46,11 +45,11 @@ struct LanguagesList: View {
                     HStack {
                         Button(action: {
                             print("Translating from: \(names[index])")
-                            if choice == 1 {
+                            if viewedLanguages.selection == 1 {
                                 viewedLanguages.firstName = names[index]
                                 viewedLanguages.firstCode = codes[index]
                                 
-                            } else if choice == 2 {
+                            } else if viewedLanguages.selection == 2 {
                                 viewedLanguages.secondName = names[index]
                                 viewedLanguages.secondCode = codes[index]
                             }
