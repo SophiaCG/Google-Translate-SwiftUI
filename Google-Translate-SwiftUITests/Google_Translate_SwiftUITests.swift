@@ -8,12 +8,15 @@
 import XCTest
 @testable import Google_Translate_SwiftUI
 
+
+// Code from Ray Wenderlich: https://www.raywenderlich.com/21020457-ios-unit-testing-and-ui-testing-tutorial
 class APITests: XCTestCase {
     
-    var sut: URLSession!
-    let networkMonitor = NetworkMonitor.shared
-    let viewModel = ViewModel()
+    let networkMonitor = NetworkMonitor.shared  // Checks network connection
+    let viewModel = ViewModel()     // Instance of View Model
+    var sut: URLSession!    // SUT = System Under Test
     
+    // Create the SUT in setUpWithError() and release it in tearDownWithError() to ensure every test starts with a clean slate
     override func setUpWithError() throws {
         try super.setUpWithError()
         sut = URLSession(configuration: .default)
@@ -24,21 +27,19 @@ class APITests: XCTestCase {
         try super.tearDownWithError()
     }
 
+//MARK: - Tests Language List API in getLanguage()
     func testValidListAPI() throws {
         try XCTSkipUnless(
             networkMonitor.isReachable,
             "Network connectivity needed for this test.")
         
-        // given
         let urlString = "https://google-translate1.p.rapidapi.com/language/translate/v2/languages?target=en&rapidapi-key=\(viewModel.apiKey)"
         let url = URL(string: urlString)!
         
         // 1. expectation(description:): Returns XCTestExpectation, stored in promise. description describes what you expect to happen
         let promise = expectation(description: "Status code: 200")
         
-        // when
         let dataTask = sut.dataTask(with: url) { _, response, error in
-            // then
             if let error = error {
                 XCTFail("Error: \(error.localizedDescription)")
                 return
@@ -63,14 +64,12 @@ class APITests: XCTestCase {
             "Network connectivity needed for this test."
         )
         
-        // given
         let urlString = "https://google-translate1.p.rapidapi.com/language/translate/v2/languages?target=en&rapidapi-key=\(viewModel.apiKey)"
         let url = URL(string: urlString)!
         let promise = expectation(description: "Completion handler invoked")
         var statusCode: Int?
         var responseError: Error?
         
-        // when
         let dataTask = sut.dataTask(with: url) { _, response, error in
             statusCode = (response as? HTTPURLResponse)?.statusCode
             responseError = error
@@ -79,26 +78,23 @@ class APITests: XCTestCase {
         dataTask.resume()
         wait(for: [promise], timeout: 5)
         
-        // then
         XCTAssertNil(responseError)
         XCTAssertEqual(statusCode, 200)
     }
  
+//MARK: - Tests Translation API in translate()
     func testValidTranslationAPI() throws {
         try XCTSkipUnless(
             networkMonitor.isReachable,
             "Network connectivity needed for this test.")
         
-        // given
         let urlString = "https://google-translate20.p.rapidapi.com/translate?text=hello&sl=en&tl=fr&rapidapi-key=\(viewModel.apiKey)"
         let url = URL(string: urlString)!
         
         // 1. expectation(description:): Returns XCTestExpectation, stored in promise. description describes what you expect to happen
         let promise = expectation(description: "Status code: 200")
         
-        // when
         let dataTask = sut.dataTask(with: url) { _, response, error in
-            // then
             if let error = error {
                 XCTFail("Error: \(error.localizedDescription)")
                 return
@@ -123,14 +119,12 @@ class APITests: XCTestCase {
             "Network connectivity needed for this test."
         )
         
-        // given
         let urlString = "https://google-translate20.p.rapidapi.com/translate?text=hello&sl=en&tl=fr&rapidapi-key=\(viewModel.apiKey)"
         let url = URL(string: urlString)!
         let promise = expectation(description: "Completion handler invoked")
         var statusCode: Int?
         var responseError: Error?
         
-        // when
         let dataTask = sut.dataTask(with: url) { _, response, error in
             statusCode = (response as? HTTPURLResponse)?.statusCode
             responseError = error
@@ -139,7 +133,6 @@ class APITests: XCTestCase {
         dataTask.resume()
         wait(for: [promise], timeout: 5)
         
-        // then
         XCTAssertNil(responseError)
         XCTAssertEqual(statusCode, 200)
     }

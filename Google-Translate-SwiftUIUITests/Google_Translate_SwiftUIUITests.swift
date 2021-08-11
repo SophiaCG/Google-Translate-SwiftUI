@@ -7,10 +7,12 @@
 
 import XCTest
 
+// Code from Ray Wenderlich: https://www.raywenderlich.com/21020457-ios-unit-testing-and-ui-testing-tutorial
 class Google_Translate_SwiftUIUITests: XCTestCase {
 
     var app: XCUIApplication!
 
+// Create the SUT in setUpWithError()
     override func setUpWithError() throws {
         try super.setUpWithError()
         continueAfterFailure = false

@@ -10,14 +10,16 @@ import SwiftUI
 
 class ViewModel: ObservableObject {
     
-    @Published var languages = [Language]()
-    @Published var input: String = ""
-    @Published var translation: String = ""
-    @Published var sourceLang: String = "en"
-    @Published var targetLang: String = "fr"
+    @Published var languages = [Language]()     // Language list (array)
+    
+    @Published var input: String = ""           // Text entered by user to translate
+    @Published var translation: String = ""     // Translation of input
+    @Published var sourceLang: String = "en"    // Language of input
+    @Published var targetLang: String = "fr"    // Language of translation
 
     let apiKey = "API-KEY-HERE"
     
+//MARK: - Language List API Call
     func getLanguages(completion:@escaping (ListResults) -> ()) {
         
         guard let url = URL(string: "https://google-translate1.p.rapidapi.com/language/translate/v2/languages?target=en&rapidapi-key=\(apiKey)") else {
@@ -33,21 +35,19 @@ class ViewModel: ObservableObject {
             
             do {
                 let results = try JSONDecoder().decode(ListResults.self, from: data!)
-                print("LANGUAGES: \(results.data.languages[0].name)")
                 
                 DispatchQueue.main.async {
                     self.languages = results.data.languages
                     completion(results)
                 }
-                
             } catch {
                 print("RESULTS ERROR 1: \(error)")
             }
-
         }
         task.resume()
     }
 
+//MARK: - Translation API Call
     func translate(for input: String, for sourceLang: String, for targetLang: String, completion:@escaping (TranslationResults) -> ()) {
 
         self.input = input.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!
@@ -71,11 +71,9 @@ class ViewModel: ObservableObject {
                     self.translation = results.data.translation
                     completion(results)
                 }
-                
             } catch {
                 print("RESULTS ERROR 2: \(error)")
             }
-
         }
         task.resume()
     }

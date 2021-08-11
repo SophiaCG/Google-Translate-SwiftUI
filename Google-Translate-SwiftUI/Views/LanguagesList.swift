@@ -8,19 +8,24 @@
 import Foundation
 import SwiftUI
 
+// Modal sheet that displays available languages
 struct LanguagesList: View {
     
-    @State var names: [String] = []
-    @State var codes: [String] = []
-    @Binding var viewedLanguages: ViewedLanguages
-    @Binding var isPresented: Bool
+    @Binding var viewedLanguages: ViewedLanguages   // Variables for buttons
+    @Binding var isPresented: Bool      // Toggles whether modal sheet is presented or not
+    @State var names: [String] = []     // Name of language (i.e. English)
+    @State var codes: [String] = []     // Code of language (i.e. en)
+    
+    let screen = UIScreen.main.bounds
 
     var body: some View {
         
         VStack {
+            
+//MARK: - Header
             ZStack {
                 Rectangle()
-                    .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height * 0.075, alignment: .top)
+                    .frame(width: screen.width, height: screen.height * 0.075, alignment: .top)
                     .foregroundColor(Color(UIColor.systemGray6))
                 HStack {
                     Text("Translate from")
@@ -40,19 +45,24 @@ struct LanguagesList: View {
                 }
             }
 
+//MARK: - List of Available Languages
             ScrollView {
                 ForEach(names.indices, id: \.self) { index in
                     HStack {
                         Button(action: {
-                            print("Translating from: \(names[index])")
+
                             if viewedLanguages.selection == 1 {
+                                // Changes language of button 1
                                 viewedLanguages.firstName = names[index]
                                 viewedLanguages.firstCode = codes[index]
                                 
                             } else if viewedLanguages.selection == 2 {
+                                // Changes language of button 2
                                 viewedLanguages.secondName = names[index]
                                 viewedLanguages.secondCode = codes[index]
                             }
+                            
+                            // Dismisses modal sheet
                             self.isPresented = false
                         }, label: {
                             Text(names[index])
@@ -61,12 +71,13 @@ struct LanguagesList: View {
                                 .padding(.leading, 30)
                             Spacer()
                         })
-                        .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height * 0.07, alignment: .center)
+                        .frame(width: screen.width, height: screen.height * 0.07, alignment: .center)
                         .border(Color.gray, width: 0.23)
                         
                     }
                     
                 } .onAppear() {
+                    // Calls API in getLanguages to get a list of available languages
                     ViewModel().getLanguages { (results) in
                         for result in results.data.languages {
                             names.append(result.name)

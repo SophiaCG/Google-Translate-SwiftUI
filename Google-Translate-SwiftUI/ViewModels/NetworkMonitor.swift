@@ -7,6 +7,11 @@
 
 import Network
 
+/*
+ Code from Ray Wenderlich: https://www.raywenderlich.com/21020457-ios-unit-testing-and-ui-testing-tutorial
+ Checks for network connection
+*/
+
 class NetworkMonitor {
   static let shared = NetworkMonitor()
   var isReachable: Bool { status == .satisfied }

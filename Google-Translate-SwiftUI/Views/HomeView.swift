@@ -8,30 +8,38 @@
 import SwiftUI
 import CoreData
 
+// Button variables
 struct ViewedLanguages: Hashable, Equatable {
-    var firstName: String = "English"
-    var firstCode: String = "en"
-    var secondName: String = "French"
-    var secondCode: String = "fr"
-    var selection: Int = 0
+    var firstName: String = "English"       // Name of language on first button
+    var firstCode: String = "en"            // Code of first button's language for API call
+    var secondName: String = "French"       // Name of language on second button
+    var secondCode: String = "fr"           // Code of second button's language for API call
+    var selection: Int = 0                  // Decides whether the first or second button has been pressed
 }
 
+// Variables that WILL be saved to Core Data
 struct Translation {
     var input: String = ""
     var translation: String = ""
     var star: Bool = false
 }
 
+// Handles translations (API calls) and saving data to Core Data; the REAL main view of the app
 struct HomeView: View {
     
+    // Core Data
     @Environment(\.managedObjectContext) private var context
     @FetchRequest(entity: SavedTranslations.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \SavedTranslations.time, ascending: true)])
     var savedTranslations: FetchedResults<SavedTranslations>
 
+    // View Model
     @ObservedObject var viewModel: ViewModel
-    @State var viewedLanguages = ViewedLanguages()
     
+    // Instances of objects
+    @State var viewedLanguages = ViewedLanguages()
     @State var translation = Translation()
+    
+    // Decides whether to present modal sheet or not
     @State var isPresented: Bool = false
     
     let screen = UIScreen.main.bounds
@@ -52,9 +60,10 @@ struct HomeView: View {
             
 //MARK: - Buttons
             HStack {
+                
+                // First (left) button: English by default
                 Button(action: {
-                    print(viewedLanguages.firstName)
-                    print(viewedLanguages.firstCode)
+                    // Passes to modal sheet that button 1 is being called
                     viewedLanguages.selection = 1
                     isPresented.toggle()
                     
@@ -66,8 +75,8 @@ struct HomeView: View {
                         .foregroundColor(.blue)
                 })
                 
+                // Switch (middle) button: switches languages between first and second button
                 Button(action: {
-                    print("Switch language")
                     let temp = viewedLanguages.firstName
                     viewedLanguages.firstName = viewedLanguages.secondName
                     viewedLanguages.secondName = temp
@@ -87,9 +96,9 @@ struct HomeView: View {
                         .foregroundColor(Color(UIColor.darkGray))
                 })
                 
+                // Second (right) button: French by default
                 Button(action: {
-                    print(viewedLanguages.secondName)
-                    print(viewedLanguages.secondCode)
+                    // Passes to modal sheet that button 2 is being called
                     viewedLanguages.selection = 2
                     isPresented.toggle()
                 }, label: {
@@ -103,6 +112,8 @@ struct HomeView: View {
             
 //MARK: - Text Fields
             VStack (spacing: -10) {
+                
+                // Top text field: where user enters input to be translated
                 ZStack {
                     TextField("Enter text", text: $viewModel.input)
                         .frame(width: screen.width * 0.925, height: screen.height * 0.1, alignment: .top)
@@ -112,6 +123,8 @@ struct HomeView: View {
                         .border(Color(UIColor.systemGray2), width: 1)
                     HStack {
                         Spacer()
+                        
+                        // Delete button: deletes any input entered by user
                         Button(action: {
                             viewModel.input = ""
                         }, label: {
@@ -124,6 +137,7 @@ struct HomeView: View {
                 }
                 
                 ZStack {
+                    // Second text field: where translation is displayed
                     TextField("", text: $viewModel.translation)
                         .frame(width: screen.width * 0.925, height: screen.height * 0.1, alignment: .top)
                         .padding(.horizontal, 20)
@@ -133,15 +147,17 @@ struct HomeView: View {
                         .disabled(true)
                     HStack {
                         Spacer()
+                        
+                        // Translate button: passes input to translation API
                         Button(action: {
                             if !viewModel.input.isEmpty {
-                                print("Translating \(viewModel.input)")
+                                // Calls API translate function to retrieve translation
                                 ViewModel().translate(for: viewModel.input, for: viewedLanguages.firstCode, for: viewedLanguages.secondCode) { (results) in
                                     viewModel.translation = results.data.translation
                                 }
                                 
-                                DispatchQueue.main.asyncAfter(deadline: .now() + 3.5) {
-                                    print("About to save translation")
+                                // Waits 4 seconds after button has been pressed before saving to Core Data
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 4) {
                                     if !viewModel.translation.isEmpty {
                                         translation.input = viewModel.input
                                         translation.translation = viewModel.translation
@@ -162,7 +178,7 @@ struct HomeView: View {
                 }
             }
             
-//MARK: - List of Translations
+//MARK: - List of Translations: a history of translations that were made and saved to Core Data
             ScrollView {
                 ForEach(savedTranslations, id: \.self) { savedItem in
                     HStack {
@@ -181,6 +197,7 @@ struct HomeView: View {
                         
                         Spacer()
 
+                        // Star button: allows user to add translations to a favorites list, toggles star variable in Core Data
                         Button(action: {
                             savedItem.star.toggle()
                             star(savedItem: savedItem, starStatus: savedItem.star)
@@ -196,21 +213,21 @@ struct HomeView: View {
                     .border(Color.gray, width: 0.23)
                     .background(Color.white)
                     .onLongPressGesture {
+                        // Deletes translation from Core Data with a long tap gesture
                         delete(savedItem: savedItem)
                     }
 
                 }
             }.background(Color(UIColor.systemGray6).opacity(20))
-        }
-        .sheet(isPresented: $isPresented) {
+        }.sheet(isPresented: $isPresented) {
+            // Modal sheet of available languages
             LanguagesList(viewedLanguages: $viewedLanguages, isPresented: $isPresented)
         }
     }
     
+    // Adds item to Core Data
     private func save(translation: Translation) {
         withAnimation {
-            print("Saving \(translation.input)")
-
             let newItem = SavedTranslations(context: context)
             newItem.input = translation.input
             newItem.translation = translation.translation
@@ -225,10 +242,9 @@ struct HomeView: View {
         }
     }
 
+    // Toggles an item's star variable in Core Data
     func star(savedItem: SavedTranslations, starStatus: Bool) {
         withAnimation {
-            print("Starring \(savedItem.input!)")
-
             savedItem.star = starStatus
                         
             do {
@@ -239,10 +255,11 @@ struct HomeView: View {
         }
     }
 
+    // Deletes item from Core Data
     private func delete(savedItem: SavedTranslations) {
         withAnimation {
-            print("Deleting \(savedItem.input!)")
             context.delete(savedItem)
+            
             do {
                 try context.save()
             } catch {

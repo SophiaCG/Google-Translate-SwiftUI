@@ -15,15 +15,6 @@ struct TranslationResults: Codable {
 
 struct TranslationData: Codable {
     var translation: String
-    var source: Source
-}
-
-struct Source: Codable {
-    var language: TranslationLanguage
-}
-
-struct TranslationLanguage: Codable {
-    var iso: String
 }
 
 //MARK: - Model for list of languages
