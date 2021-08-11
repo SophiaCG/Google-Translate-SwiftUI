@@ -10,9 +10,7 @@ I wanted to make a project that would help me develop my skills using REST APIs,
 
 You can use the Google Translate API provided by Google. However, I used two Google Translate APIs provided by RapidAPI, mostly because I'm more familiar with their APIs.
 
-I also used two separate Google Translate APIs from RapidAPI for retrieving a list of available languages and translation. Whatever API you decide to use, you will have to use an API key which you will receive when you sign for any of the above services.
-
-[Google's API](https://cloud.google.com/translate)
+I used one of the APIs for retrieving a list of available languages and the other for translation. Whatever API you decide to use, you will have to use an API key which you will receive when you sign for any API service. Only after you receive an API key will you be able to run this project.
 
 [Language List API](https://rapidapi.com/googlecloud/api/google-translate1/)
 
