@@ -9,30 +9,91 @@ import XCTest
 
 class Google_Translate_SwiftUIUITests: XCTestCase {
 
+    var app: XCUIApplication!
+
     override func setUpWithError() throws {
-        // Put setup code here. This method is called before the invocation of each test method in the class.
-
-        // In UI tests it is usually best to stop immediately when a failure occurs.
+        try super.setUpWithError()
         continueAfterFailure = false
-
-        // In UI tests it’s important to set the initial state - such as interface orientation - required for your tests before they run. The setUp method is a good place to do this.
-    }
-
-    override func tearDownWithError() throws {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
-    }
-
-    func testExample() throws {
+        
         // UI tests must launch the application that they test.
-        let app = XCUIApplication()
+        app = XCUIApplication()
         app.launch()
+    }
 
-        // Use recording to get started writing UI tests.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
+    func testUI() throws {
+        
+        // Home Screen
+        let homeTab = app.tabBars["Tab Bar"].buttons["Home"]
+        let headerLabel = app.staticTexts["Google Translate Clone"]
+        let firstButton = app.buttons["English"]
+        let secondButton = app.buttons["French"]
+        let switchButton = app.buttons["arrow.right.arrow.left"]
+        let textField = app.textFields["Enter text"]
+        let deleteButton = app.buttons["multiply"]
+        let translateButton = app.buttons["Right"]
+        let homeFavorite = app.scrollViews.otherElements.containing(.staticText, identifier:"How are you?").children(matching: .button).matching(identifier: "favorite").element(boundBy: 0)
+
+        // Language List
+        let firstLabel = app.scrollViews.otherElements.buttons["Afrikaans"]
+        let exitButton = app.buttons["multiply"]
+        
+        // Saved Screen
+        let savedTab = app.tabBars["Tab Bar"].buttons["Saved"]
+        let savedLabel = app.staticTexts["Saved"]
+        let savedFavorite = app.scrollViews.otherElements.buttons["favorite"]
+
+        
+        if firstButton.isSelected || secondButton.isSelected {
+            XCTAssertTrue(firstLabel.exists)
+            XCTAssertTrue(firstLabel.isHittable)
+            XCTAssertTrue(exitButton.exists)
+            XCTAssertTrue(exitButton.isHittable)
+        }
+        
+        if switchButton.isSelected {
+            XCTAssertTrue(switchButton.exists)
+            XCTAssertTrue(switchButton.isHittable)
+        }
+        
+        if textField.isSelected {
+            XCTAssertTrue(textField.exists)
+            XCTAssertTrue(textField.isHittable)
+        }
+        
+        if deleteButton.isSelected {
+            XCTAssertTrue(deleteButton.exists)
+            XCTAssertTrue(deleteButton.isHittable)
+        }
+
+        if translateButton.isSelected {
+            XCTAssertTrue(translateButton.exists)
+            XCTAssertTrue(translateButton.isHittable)
+        }
+
+        if savedTab.isSelected {
+            XCTAssertTrue(savedLabel.exists)
+            XCTAssertFalse(headerLabel.exists)
+            XCTAssertTrue(savedFavorite.exists)
+            XCTAssertTrue(savedFavorite.isHittable)
+
+            homeTab.tap()
+            XCTAssertTrue(headerLabel.exists)
+            XCTAssertFalse(savedLabel.exists)
+        } else if homeTab.isSelected {
+            XCTAssertTrue(headerLabel.exists)
+            XCTAssertFalse(savedLabel.exists)
+            XCTAssertTrue(homeFavorite.exists)
+            XCTAssertTrue(homeFavorite.isHittable)
+
+            savedTab.tap()
+            XCTAssertTrue(savedLabel.exists)
+            XCTAssertFalse(headerLabel.exists)
+        }
+        
     }
 
     func testLaunchPerformance() throws {
-        if #available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 7.0, *) {
+        if #available(iOS 13.0, *) {
             // This measures how long it takes to launch your application.
             measure(metrics: [XCTApplicationLaunchMetric()]) {
                 XCUIApplication().launch()
